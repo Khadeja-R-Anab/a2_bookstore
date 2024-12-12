@@ -1,0 +1,144 @@
+{
+  "books": [
+    {
+      "id": "675b39568739fc9a48611251",
+      "title": "The Great Gatsby",
+      "authorId": "675b36138739fc9a48611244",
+      "description": "A novel about the American dream and the disillusionment that comes with it.",
+      "price": 10.99,
+      "genreId": "675b38748739fc9a4861124b",
+      "rating": 4.4
+    },
+    {
+      "id": "675b39fc8739fc9a48611252",
+      "title": "To Kill a Mockingbird",
+      "authorId": "675b366b8739fc9a48611245",
+      "description": "A novel set in the Deep South and focused on themes of racial injustice and moral growth.",
+      "price": 12.99,
+      "genreId": "675b38748739fc9a4861124b",
+      "rating": 4.8
+    },
+    {
+      "id": "675b3a388739fc9a48611253",
+      "title": "1984",
+      "authorId": "675b36b78739fc9a48611246",
+      "description": "A dystopian novel that explores the dangers of totalitarianism and extreme political ideology.",
+      "price": 14.99,
+      "genreId": "675b38af8739fc9a4861124c",
+      "rating": 4.7
+    },
+    {
+      "id": "675b3a748739fc9a48611254",
+      "title": "Pride and Prejudice",
+      "authorId": "675b36e28739fc9a48611247",
+      "description": "A romantic novel that charts the emotional development of the protagonist, Elizabeth Bennet.",
+      "price": 9.99,
+      "genreId": "675b38c98739fc9a4861124d",
+      "rating": 4.6
+    },
+    {
+      "id": "675b3ab38739fc9a48611255",
+      "title": "The Catcher in the Rye",
+      "authorId": "675b37078739fc9a48611248",
+      "description": "A story about teenage rebellion and alienation narrated by the protagonist Holden Caulfield.",
+      "price": 11.99,
+      "genreId": "675b38748739fc9a4861124b",
+      "rating": 4.0
+    },
+    {
+      "id": "675b3b078739fc9a48611259",
+      "title": "The Alchemist",
+      "authorId": "675b37238739fc9a48611249",
+      "description": "A philosophical book that tells the story of Santiago, a shepherd boy on a journey to discover his personal legend.",
+      "price": 13.99,
+      "genreId": "675b38df8739fc9a4861124e",
+      "rating": 4.5
+    }
+  ],
+
+  "genres": [
+    { "id": "675b38748739fc9a4861124b", "name": "Fiction" },
+    { "id": "675b38af8739fc9a4861124c", "name": "Dystopian" },
+    { "id": "675b38c98739fc9a4861124d", "name": "Romance" },
+    { "id": "675b38df8739fc9a4861124e", "name": "Adventure" },
+    { "id": "675b390b8739fc9a4861124f", "name": "Non-Fiction" }
+  ],
+
+  "authors": [
+    {
+      "id": "675b36138739fc9a48611244", 
+      "name": "F. Scott Fitzgerald",
+      "biography": "An American novelist and short story writer."
+    },
+    {
+      "id": "675b366b8739fc9a48611245",
+      "name": "Harper Lee",
+      "biography": "An American novelist known for 'To Kill a Mockingbird'."
+    },
+    {
+      "id": "675b36b78739fc9a48611246",
+      "name": "George Orwell",
+      "biography": "An English novelist and essayist."
+    },
+    {
+      "id": "675b36e28739fc9a48611247",
+      "name": "Jane Austen",
+      "biography": "An English novelist known for her social commentary."
+    },
+    {
+      "id": "675b37078739fc9a48611248",
+      "name": "J.D. Salinger",
+      "biography": "An American writer known for 'The Catcher in the Rye'."
+    },
+    {
+      "id": "675b37238739fc9a48611249",
+      "name": "Paulo Coelho",
+      "biography": "A Brazilian lyricist and novelist."
+    }
+  ],
+
+  "reviews": [
+    {
+      "id": "675b3beb8739fc9a4861125e",
+      "bookId": "675b39568739fc9a48611251",
+      "userId": "675b3b5d8739fc9a4861125a",
+      "rating": 5,
+      "comment": "A timeless classic!"
+    },
+    {
+      "id": "675b3c378739fc9a4861125f",
+      "bookId": "675b39fc8739fc9a48611252",
+      "userId": "675b3b8f8739fc9a4861125b",
+      "rating": 4,
+      "comment": "A powerful story."
+    },
+    {
+      "id": "675b3c5a8739fc9a48611260",
+      "bookId": "675b3a388739fc9a48611253",
+      "userId": "675b3ba58739fc9a4861125c",
+      "rating": 5,
+      "comment": "Chilling and thought-provoking."
+    },
+    {
+      "id": "675b3c738739fc9a48611261",
+      "bookId": "675b3a748739fc9a48611254",
+      "userId": "675b3bc58739fc9a4861125d",
+      "rating": 4,
+      "comment": "A beautifully written love story."
+    },
+    {
+      "id": "675b3c978739fc9a48611262",
+      "bookId": "675b39fc8739fc9a48611252",
+      "userId": "675b3b5d8739fc9a4861125a",
+      "rating": 5,
+      "comment": "Beautifully written."
+    }
+  ],
+
+  "users": [
+    { "id": "675b3b5d8739fc9a4861125a", "username": "reader1", "email": "reader1@example.com" },
+    { "id": "675b3b8f8739fc9a4861125b", "username": "reader2", "email": "reader2@example.com" },
+    { "id": "675b3ba58739fc9a4861125c", "username": "reader3", "email": "reader3@example.com" },
+    { "id": "675b3bc58739fc9a4861125d", "username": "reader4", "email": "reader4@example.com" }
+  ]
+}
