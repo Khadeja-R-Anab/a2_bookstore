@@ -1,4 +1,3 @@
-import booksData from '../../../public/data/books.json';
 import Button from '@/components/Button';
 import { useRouter } from 'next/router';
 
@@ -17,61 +16,82 @@ export default function BookDetails({ book, reviewsWithUsers }) {
 
   return (
     <div className='container'>
-      <h1>{book.title}</h1>
-      <p><b>Description:</b> {book.description}</p>
-      <p><b>Price:</b> ${book.price}</p>
-      <p><b>Rating:</b> {book.rating}</p>
-      <Button text={'About the Author'} route={() => goToAuthor(book.authorId)} />
+      {
+        book ? 
+        <div>
+          <h1>{book.title}</h1>
+          <p><b>Description:</b> {book.description}</p>
+          <p><b>Price:</b> ${book.price}</p>
+          <p><b>Rating:</b> {book.rating}</p>
+          <Button text={'About the Author'} route={() => goToAuthor(book.authorId)} />
+        </div> : "Loading Book Details..."
+      }
 
-      {reviewsWithUsers.length === 0 ? (
-        <></>
-      ) : (
-        <div className='reviews'>
-          <h2 className='review-heading'>Reviews</h2>
-          {reviewsWithUsers.map((review) => (
-            <div key={review.id} className='review'>
-              <p className='rating'><b>{review.username}</b>
-                <span>
-                  {renderStars(review.rating).map((star, index) => (
-                    <img key={index} src={star} alt='star' className='star'/>
-                  ))}
-                </span>
-              </p>
-              <p>{review.comment}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      { reviewsWithUsers ? 
+        reviewsWithUsers.length === 0 ? (
+          <></>
+        ) : (
+          <div className='reviews'>
+            <h2 className='review-heading'>Reviews</h2>
+            {reviewsWithUsers.map((review) => (
+              <div key={review._id} className='review'>
+                <p className='rating'><b>{review.username}</b>
+                  <span>
+                    {renderStars(review.rating).map((star, index) => (
+                      <img key={index} src={star} alt='star' className='star'/>
+                    ))}
+                  </span>
+                </p>
+                <p>{review.comment}</p>
+              </div>
+            ))}
+          </div>
+        ) : "Loading Reviews..."
+      }
     </div>
   );
 }
 
 export async function getStaticProps({ params }) {
-  const book = booksData.books.find((b) => b.id === params.id);
+  try {
+    console.log(params)
+    const bookResponse = await fetch(`http://localhost:3000/api/books/${params.id}`);
+    if (!bookResponse.ok) {
+      throw new Error('Failed to fetch book data');
+    }
+    const book = await bookResponse.json();
 
-  if (!book) {
+    const reviewsResponse = await fetch(`http://localhost:3000/api/reviews/${params.id}`);
+    if (!reviewsResponse.ok) {
+      throw new Error('Failed to fetch reviews');
+    }
+    const reviews = await reviewsResponse.json();
+
+    return {
+      props: { book, reviewsWithUsers: reviews },
+      revalidate: 60, // ISR revalidation
+    };
+  } catch (error) {
+    console.error(error);
     return { notFound: true };
   }
-
-  // Filter reviews that match the book's ID
-  const reviews = booksData.reviews.filter((review) => review.bookId === book.id);
-
-  // Map each review to include the username by matching the userId
-  const reviewsWithUsers = reviews.map((review) => {
-    const user = booksData.users.find((user) => user.id === review.userId);
-    return { ...review, username: user ? user.username : 'Anonymous' };
-  });
-
-  return {
-    props: { book, reviewsWithUsers },
-    revalidate: 60, // ISR revalidation
-  };
 }
 
 export async function getStaticPaths() {
-  const paths = booksData.books.map((book) => ({
-    params: { id: book.id },
-  }));
+  try {
+    const booksResponse = await fetch(`http://localhost:3000/api/books`);
+    if (!booksResponse.ok) {
+      throw new Error('Failed to fetch books data');
+    }
+    const books = await booksResponse.json();
 
-  return { paths, fallback: false };
+    const paths = books.map((book) => ({
+      params: { id: book._id },
+    }));
+
+    return { paths, fallback: false };
+  } catch (error) {
+    console.error(error);
+    return { paths: [], fallback: false };
+  }
 }
