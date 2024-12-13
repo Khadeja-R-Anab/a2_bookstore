@@ -1,7 +1,8 @@
 import Button from '@/components/Button';
+import withAuth from '@/helper/withAuth';
 import { useRouter } from 'next/router';
 
-export default function BookDetails({ book, reviewsWithUsers }) {
+function BookDetails({ book, reviewsWithUsers }) {
   const router = useRouter();
 
   const goToAuthor = (id) => {
@@ -51,6 +52,8 @@ export default function BookDetails({ book, reviewsWithUsers }) {
     </div>
   );
 }
+
+export default withAuth(BookDetails);
 
 export async function getStaticProps({ params }) {
   try {

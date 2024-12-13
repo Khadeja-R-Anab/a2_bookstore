@@ -291,10 +291,17 @@ a {
     padding: 5px;
     cursor: pointer;
   }
-  /* .theme{
-    border-radius: 50%;
+  .auth-button{
+    border: solid 1px rgb(85, 132, 135);
+    background-color: #0000;
+    padding: 0px 8px;
+    border-radius: 10px;
     cursor: pointer;
-  } */
+  }
+  .auth-button:hover {
+    background-color: #0000;
+    transition: all 0.3s;
+  }
 }
 
 /* F O O T E R */
@@ -309,5 +316,72 @@ a {
   background-color: rgb(138, 182, 184);
   p{
     cursor: pointer;
+  }
+}
+
+/* L O G I N */
+/* General styles for the login page */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  /* background-color: #f9f9f9; */
+  font-family: Arial, sans-serif;
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: rgb(85, 132, 135);
+  }
+  
+  .form-group {
+    margin-bottom: 1.2rem;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color:rgb(138, 182, 184);
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: rgb(138, 182, 184);
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+  }
+  
+  button {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    padding: 0.8rem;
+    font-size: 1rem;
+    /* border: sol; */
+    border-radius: 4px;
+    cursor: pointer;
+    border-color: rgb(138, 182, 184);;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .error {
+    color: red;
+    margin-top: -0.8rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
   }
 }

@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import { connectToDatabase } from '../../../lib/mongo';
+import { connectToDatabase } from '../../../helper/mongo';
 
 const MONGO_URI = process.env.MONGO_URI;
 

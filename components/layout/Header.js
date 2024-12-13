@@ -1,10 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useRouter } from "next/router";
+import { AuthContext } from "../../context/AuthContext";
+import { useLoading } from '@/context/LoadingContext';
 
 export default function Header() {
   const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
   
+  const { user, logout } = useContext(AuthContext); // Access user and logout from context
+
+  const { setIsLoading } = useLoading();
+
+  useEffect(() => {
+    const handleStart = () => setIsLoading(true);
+    const handleStop = () => setIsLoading(false);
+
+    router.events.on('routeChangeStart', handleStart);
+    router.events.on('routeChangeComplete', handleStop);
+    router.events.on('routeChangeError', handleStop);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      router.events.off('routeChangeComplete', handleStop);
+      router.events.off('routeChangeError', handleStop);
+    };
+  }, [router, setIsLoading]);
+
   //add an remove classes to change theme
   useEffect(() => {
     if (darkMode) {
@@ -25,6 +46,15 @@ export default function Header() {
   const goToSearch = () => {
     router.push('/search');
   }
+
+  const handleAuthAction = () => {
+    if (user) {
+      logout(); // Call logout function if the user is logged in
+      router.push('/');
+    } else {
+      router.push('/login'); // Navigate to login page if not logged in
+    }
+  };
 
   return (
     <div className="header">
@@ -55,6 +85,11 @@ export default function Header() {
         />
       </span>
       
+      {/* Login/Logout Button */}
+      <button className="auth-button" onClick={handleAuthAction}>
+        {user ? "Logout" : "Login"}
+      </button>
+
     </div>
   );
 }

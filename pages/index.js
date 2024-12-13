@@ -1,12 +1,16 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Button from "@/components/Button";
 import Featured from "@/components/Featured";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function Home() {
   const router = useRouter();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true)
+
+  const {user} = useContext(AuthContext);
+  console.log(user)
 
   // Fetch the first three books for the featured section
   useEffect(() => {
@@ -48,7 +52,7 @@ export default function Home() {
   return (
     <>
       <div className="container home-page">
-        <h1 className="home-title">Welcome to the Book Store</h1>
+        <h1 className="home-title">Welcome to the Book Store {user ? user.email : ""}</h1>
 
         {/* Featured Books Section */}
         <section>

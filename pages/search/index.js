@@ -1,52 +1,95 @@
-import { useEffect, useState } from 'react';
-import booksData from '../../public/data/books.json';
+import { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import Button from '@/components/Button';
+import { AuthContext } from '@/context/AuthContext';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [history, setHistory] = useState([]);
   const router = useRouter();
+  const { user } = useContext(AuthContext);
 
-  //load history from localStorage
+  // Load history from API or localStorage
   useEffect(() => {
-    const storedHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    setHistory(storedHistory);
-  }, []);
+    if (user) {
+      fetch(`/api/user/history?userId=${user.id}`)
+        .then((res) => res.json())
+        .then((data) => setHistory(data))
+        .catch((error) => console.error('Failed to load search history', error));
+    } else {
+      const storedHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+      setHistory(storedHistory);
+    }
+  }, [user]);
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    const filteredBooks = booksData.books.filter((book) =>
-      book.title.toLowerCase().includes(query.toLowerCase())
-    );
-    setResults(filteredBooks);
+    try{
+      const response = await fetch('http://localhost:3000/api/books');
+      if (response.ok) {
+        const books = await response.json();
 
-    // Store search in localStorage
-    const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    searchHistory.unshift(query); //add query to start of array. Append would add it to the end so we're not using that
-    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-    
-    //also add the query to the state so we get realtime update :)
-    const storedHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    setHistory(storedHistory);
+        const filteredBooks = books.filter((book) =>
+          book.title.toLowerCase().includes(query.toLowerCase())
+        );
+        setResults(filteredBooks);
+
+        if (user) {
+          // Save search in the database for logged-in users
+          try {
+            const response = await fetch('/api/user/history', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId: user.id, search: query }),
+            });
+
+            if (response.ok) {
+              const updatedHistory = await fetch(`/api/user/history?userId=${user.id}`)
+                .then((res) => res.json());
+              setHistory(updatedHistory);
+            } else {
+              console.error('Failed to save search history');
+            }
+          } catch (error) {
+            console.error('Error saving search history:', error);
+          }
+        }
+      } else {
+        console.error('Failed to fetch books');
+      }
+    } catch (error) {
+      console.error('Error during search:', error);
+    }
   };
 
   const loadToSearch = (item) => {
-    setQuery(item)
-  }
+    setQuery(item);
+  };
 
   const goToBook = (id) => {
-    router.push('books/'+id)
-  }
+    router.push('books/' + id);
+  };
 
-  const clearHistory = () => {
-    localStorage.removeItem('searchHistory');
-    setHistory([]);
-  }
+  const clearHistory = async () => {
+    // Clear search history for logged-in users
+    try {
+      const response = await fetch(`/api/user/history?userId=${user.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setHistory([]);
+      } else {
+        console.error('Failed to clear search history');
+      }
+    } catch (error) {
+      console.error('Error clearing search history:', error);
+    }
+  };
 
   return (
-    <div className='container'>
+    <div className="container">
       <h1>Search Books</h1>
 
       <form onSubmit={handleSearch}>
@@ -56,7 +99,7 @@ export default function SearchPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for a book"
         />
-        <Button type={'submit'} text={'Search'}/>
+        <Button type="submit" text="Search" />
       </form>
 
       <div>
@@ -66,24 +109,35 @@ export default function SearchPage() {
         ) : (
           <ul>
             {results.map((book) => (
-              <li key={book.id} onClick={() => goToBook(book.id)}>{book.title}</li>
+              <li key={book.id} onClick={() => goToBook(book.id)}>
+                {book.title}
+              </li>
             ))}
           </ul>
         )}
       </div>
 
-      <div className="search-history">
-        <h2>Recent Searches</h2>
-        <ul>
-          {history.length === 0 ? (
-            <p>No recent searches</p>
-          ) : (
-            history.map((item, index) => <li key={index} onClick={() => loadToSearch(item)}>{item}</li>)
-          )}
-        </ul>
-      </div>
+      {user && (
+        <div className="search-history">
+          <h2>Your Recent Searches</h2>
+          <ul>
+            {history.length === 0 ? (
+              <p>No recent searches</p>
+            ) : (
+              history.map((item, index) => (
+                <li key={index} onClick={() => loadToSearch(item.search)}>
+                  {item.search}
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      )}
 
-      {history.length !== 0 ? <Button text={'Clear History'} route={clearHistory}/> : <></>}
+      { user && history.length !== 0 && (
+        <Button text="Clear History" route={clearHistory} />
+      )}
+
     </div>
   );
 }

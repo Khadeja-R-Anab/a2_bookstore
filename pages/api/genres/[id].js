@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { connectToDatabase } from '../../../lib/mongo';
+import { connectToDatabase } from '../../../helper/mongo';
 
 export default async function handler(req, res) {
   const { id } = req.query;

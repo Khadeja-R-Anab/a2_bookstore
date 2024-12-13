@@ -1,35 +1,54 @@
-import { connectToDatabase } from '../../../lib/mongo';
+import { connectToDatabase } from '../../../helper/mongo';
 
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    const { userId } = req.query;
+  const { method } = req;
 
-    try {
-      const client = await connectToDatabase();
-      const db = client.db('Bookstore');
+  try {
+    const client = await connectToDatabase();
+    const db = client.db('Bookstore');
 
-      const history = await db.collection('history').find({ userId }).toArray();
+    if (method === 'GET') {
+      const { userId } = req.query;
+      if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+      }
+
+      const history = await db
+        .collection('history')
+        .find({ userId })
+        .sort({ timestamp: -1 })
+        .limit(10)
+        .toArray();
 
       res.status(200).json(history);
-      client.close();
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  } else if (req.method === 'POST') {
-    const { userId, search } = req.body;
+    } else if (method === 'POST') {
+      const { userId, search } = req.body;
+      if (!userId || !search) {
+        return res.status(400).json({ error: 'User ID and search query are required' });
+      }
 
-    try {
-      const client = await connectToDatabase();
-      const db = client.db('Bookstore');
-
-      await db.collection('history').insertOne({ userId, search, timestamp: new Date() });
+      await db.collection('history').insertOne({
+        userId,
+        search,
+        timestamp: new Date(),
+      });
 
       res.status(201).json({ message: 'Search added to history' });
-      client.close();
-    } catch (error) {
-      res.status(500).json({ error: 'Internal server error' });
+    } else if (method === 'DELETE') {
+      const { userId } = req.query;
+      if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+      }
+
+      await db.collection('history').deleteMany({ userId });
+      res.status(200).json({ message: 'Search history cleared' });
+    } else {
+      res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
+      res.status(405).end(`Method ${method} Not Allowed`);
     }
-  } else {
-    res.status(405).end(); // Method Not Allowed
+
+    client.close();
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
