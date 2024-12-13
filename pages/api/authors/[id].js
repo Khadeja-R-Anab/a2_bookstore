@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       }
 
       // Get books written by this author
-      const books = await db.collection('books').find({ authorId: id }).toArray();
+      const books = await db.collection('books').find({ authorId: new ObjectId(id) }).toArray();
 
       res.status(200).json({ author, books });
       client.close();
