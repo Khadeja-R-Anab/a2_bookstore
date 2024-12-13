@@ -7,7 +7,7 @@ export default async function handler(req, res) {
       const db = client.db('Bookstore');
 
       const genres = await db.collection('genres').find({}).toArray();
-
+      // console.log('All Genre API hit')
       res.status(200).json(genres);
       client.close();
     } catch (error) {

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { connectToDatabase } from '../../../lib/mongo';
 
 export default async function handler(req, res) {
@@ -8,8 +9,12 @@ export default async function handler(req, res) {
       const client = await connectToDatabase();
       const db = client.db('Bookstore');
 
+      console.log("Connected to book from genre api")
+
       // Get books by genre
-      const books = await db.collection('books').find({ genre: id }).toArray();
+      const books = await db.collection('books').find({ genreId: new ObjectId(id) }).toArray();
+
+      console.log("Books:" + books)
 
       res.status(200).json(books);
       client.close();
